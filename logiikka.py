@@ -9,7 +9,7 @@ def create_pakka():
 def shuffle_pakka(pakka):
     random.shuffle(pakka)
 
-kortteja_kadessa=10
+kortteja_kadessa=5
 
 def deal_hands(pakka):
     kasi1 = pakka[:kortteja_kadessa]

@@ -1,7 +1,6 @@
+import math
 import pygame
-from sprite_sheet import load_sprite_sheet, maarita_alueet, display_kortit,display_kortti,draw_circle
-#from kortti import korttien_maara, leveys, korkeus, vali, kokonaisleveys, paikka
-from kortti import kortti
+from sprite_sheet import load_sprite_sheet, maarita_alueet, display_kortit,display_kortit,draw_hovering_circle, hovering_circle_position, hovering_circle_radius
 from logiikka import deal_hands, create_pakka, shuffle_pakka, pakan_vahennys,pakan_lisays,kortteja_kadessa
 
 
@@ -9,14 +8,13 @@ from logiikka import deal_hands, create_pakka, shuffle_pakka, pakan_vahennys,pak
 pygame.init()
 ruutu_leveys= 1280
 ruutu_korkeus= 720
-screen = pygame.display.set_mode((ruutu_leveys,ruutu_korkeus))
+screen = pygame.display.set_mode((ruutu_leveys,ruutu_korkeus), pygame.SRCALPHA)
 running = True
 sprite_sheet_kuva=load_sprite_sheet()
 
 
 taustakuva = pygame.image.load("casino_texture.jpg")
 taustakuva_rect = taustakuva.get_rect()
-
     
 
 
@@ -57,9 +55,9 @@ while running:
     pakan_lisays(kasi1,loput_kortit)
     pakan_vahennys(kasi1,poistettavat_kortit)
 
-
+    
     display_kortit(card_ids_to_display, kortti_alueet, sprite_sheet_kuva, screen, cursor_position, pressed_buttons)
-    #display_kortti(card_ids_to_display, kortti_alueet, sprite_sheet_kuva, screen, (5,5))
+   
     
 
 

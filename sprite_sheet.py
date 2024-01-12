@@ -2,6 +2,8 @@ import pygame
 from logiikka import deal_hands, create_pakka
 
 pygame.init()
+screen_width, screen_height = (1280, 720)
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.SRCALPHA)
 
 def load_sprite_sheet():
     sprite_sheet_kuva = pygame.image.load("kortti_sheet.png")
@@ -25,8 +27,19 @@ def maarita_alueet():
 
     return kortti_alueet
 
-def draw_circle(screen, cursor_position, circle_radius):
-    pygame.draw.circle(screen, (255, 0, 0), cursor_position, circle_radius,3)
+def draw_hovering_circle(screen, cursor_position, hovering_circle_radius,transparency=220):
+    color=(220,220,220,transparency)
+    pygame.draw.circle(screen,color, cursor_position, hovering_circle_radius)
+
+def is_card_over_circle(card_rect, hovering_circle_position, hovering_circle_radius):
+    circle_center = (hovering_circle_position[0] + hovering_circle_radius, hovering_circle_position[1] + hovering_circle_radius)
+    return pygame.Rect(circle_center[0] - hovering_circle_radius, circle_center[1] - hovering_circle_radius, hovering_circle_radius * 2, hovering_circle_radius * 2).colliderect(card_rect)
+
+# Define the initial values for hovering circle position and radius
+hovering_circle_position = (screen.get_width() // 2, screen.get_height() // 2)
+hovering_circle_radius = 50
+
+
 
 def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_position, pressed_buttons):
     if not card_ids:
@@ -42,8 +55,8 @@ def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_po
     card_height = kortti_alueet[card_ids[0]].height
 
     for i, card_id in enumerate(card_ids):
-        x_position = positio + i * (card_width +(1/(korttien_lkm*10**3)))
-        y_position = 720 - 1150 / 5
+        x_position = positio + i * (card_width +(1/(korttien_lkm*100**3)))
+        y_position = 720 - 1150 /5
         card_rect = pygame.Rect(x_position, y_position, card_width, card_height)
 
         # Check if cursor is over the card
@@ -52,15 +65,20 @@ def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_po
                 # Update the position of the card while the mouse button is held down
                 x_position, y_position = cursor_position[0] - card_width / 2, cursor_position[1] - card_height / 2
                 display_kortit.dragging_card_position = (x_position, y_position)
+            if is_card_over_circle(card_rect, hovering_circle_position, hovering_circle_radius):
+                # Do something when the card is dragged over the hovering circle
+                print("päällä")
+                pass
             else:
                 display_kortit.dragging_card = card_id
                 display_kortit.dragging_card_position = (x_position, y_position)
         elif hasattr(display_kortit, 'dragging_card') and display_kortit.dragging_card == card_id:
             x_position, y_position = cursor_position[0] - card_width / 2, cursor_position[1] - card_height / 2
             display_kortit.dragging_card_position = (x_position, y_position)
-
+        
         display_kortti(card_id, kortti_alueet, sprite_sheet_kuva, screen, (x_position, y_position))
-
+        draw_hovering_circle(screen, hovering_circle_position, hovering_circle_radius,transparency=220)
+    
     # Reset dragging state on mouse button release
     if not pressed_buttons[0] and hasattr(display_kortit, 'dragging_card'):
         display_kortit.dragging_card = None
