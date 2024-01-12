@@ -25,34 +25,31 @@ def maarita_alueet():
 
     return kortti_alueet
 
-
-
+def draw_circle(screen, cursor_position, circle_radius):
+    pygame.draw.circle(screen, (255, 0, 0), cursor_position, circle_radius,3)
 
 def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_position, pressed_buttons):
     if not card_ids:
         print("iha tyhjä")
         return
-    kortit_kadessa_list = list(card_ids)
 
+    kortit_kadessa_list = list(card_ids)
     kortit_copy = kortit_kadessa_list.copy()
     korttien_lkm = len(card_ids)
     kokonaisleveys = (korttien_lkm * (1920 / 13) + (korttien_lkm - 1) * 15)
     positio = (1280 - kokonaisleveys) / 2
-    card_width = kortti_alueet[card_ids[0]].width  # Assuming all cards have the same width
-    card_height = kortti_alueet[card_ids[0]].height  # Assuming all cards have the same height
-
-    cards_to_display = []
+    card_width = kortti_alueet[card_ids[0]].width
+    card_height = kortti_alueet[card_ids[0]].height
 
     for i, card_id in enumerate(card_ids):
-        if card_id in kortit_copy:
-            x_position = positio + i * (card_width + 15)
-            y_position = 720 - 1150 / 5
-            card_rect = pygame.Rect(x_position, y_position, card_width, card_height)
+        x_position = positio + i * (card_width +(1/(korttien_lkm*10**3)))
+        y_position = 720 - 1150 / 5
+        card_rect = pygame.Rect(x_position, y_position, card_width, card_height)
 
         # Check if cursor is over the card
-        if card_rect.collidepoint(cursor_position) and pressed_buttons[0]:  # M1 pressed
+        if card_rect.collidepoint(cursor_position) and pressed_buttons[0]:
             if hasattr(display_kortit, 'dragging_card') and display_kortit.dragging_card == card_id:
-                # Update the position of the card while mouse button is held down
+                # Update the position of the card while the mouse button is held down
                 x_position, y_position = cursor_position[0] - card_width / 2, cursor_position[1] - card_height / 2
                 display_kortit.dragging_card_position = (x_position, y_position)
             else:
@@ -67,19 +64,6 @@ def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_po
     # Reset dragging state on mouse button release
     if not pressed_buttons[0] and hasattr(display_kortit, 'dragging_card'):
         display_kortit.dragging_card = None
-
-    
-
-    kortit_kadessa_list = cards_to_display
-
-    # Reset dragging state on mouse button release
-    if not pressed_buttons[0] and hasattr(display_kortit, 'dragging_card'):
-        display_kortit.dragging_card = None
-
-    for card_id in kortit_kadessa_list:
-        x_position = positio + kortit_kadessa_list.index(card_id) * (card_width + 15)
-        y_position = 720 - 1150 / korttien_lkm
-        display_kortti(card_id, kortti_alueet, sprite_sheet_kuva, screen, (x_position, y_position))
 
 def display_kortti(kortin_id, kortti_alueet, sprite_sheet_kuva, screen, position):
     alue = kortti_alueet.get(kortin_id)
