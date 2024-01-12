@@ -1,3 +1,3 @@
 # paskahousu
-korttipeli
-testi!!!
+
+Siirrä kuvat parent folderii
