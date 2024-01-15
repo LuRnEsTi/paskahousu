@@ -27,12 +27,15 @@ def maarita_alueet():
 
     return kortti_alueet
 
+
 def draw_transparent_circle(surface):
-    circle_radius = 20
+    circle_radius = 30
+    circle_center = (screen_width // 2, screen_height // 2.3)
     alpha=128
     circle_color = (0, 0, 0, alpha)  # RGBA, where 128 is the alpha value for transparency
-    circle_center = (screen_width // 2, screen_height // 2.3)
     pygame.draw.circle(surface, circle_color, circle_center, circle_radius)
+    #return circle_center,circle_radius
+
 
 def is_point_inside_circle(point, circle_center, circle_radius):
     x, y = point
@@ -40,24 +43,24 @@ def is_point_inside_circle(point, circle_center, circle_radius):
     distance = ((x - center_x) ** 2 + (y - center_y) ** 2) ** 0.5
     return distance <= circle_radius, circle_center
 
+#dragging_state=False
 
-def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_position, pressed_buttons,surface):
-    global dragging_state
+def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_position, pressed_buttons,surface,circle_radius):
     if not card_ids:
         print("iha tyhjä")
         return
 
-    circle_radius = 20
-    circle_center = (screen_width // 2, screen_height // 2.3)
+
 
     korttien_lkm = len(card_ids)
     kokonaisleveys = (korttien_lkm * (1920 / 13) + (korttien_lkm - 1) * 15)
     positio = (1280 - kokonaisleveys) / 2
     card_width = kortti_alueet[card_ids[0]].width
     card_height = kortti_alueet[card_ids[0]].height
-
-    for i, card_id in enumerate(card_ids):
-        n=0
+  
+    for i, card_id in enumerate(card_ids): 
+        circle_rad=circle_radius 
+        circle_center=circle_center = (screen_width // 2, screen_height // 2.3)
         x_position = positio + i * (card_width +15)
         y_position = 720 - 1150 /5
         card_rect = pygame.Rect(x_position, y_position, card_width, card_height)
@@ -74,6 +77,7 @@ def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_po
                 #print(i)
                 dragging_state = False
 
+
             else:
                 display_kortit.dragging_card = card_id
                 display_kortit.dragging_card_position = (x_position, y_position)
@@ -85,14 +89,18 @@ def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_po
             #print(card_id)
             #print(card_ids)
             #print(i)
-            if (
-                circle_center[0] <= x_position + card_width <= circle_center[0] + circle_radius and
-                circle_center[1] <= y_position + card_height <= circle_center[1] + circle_radius
-                ):
-                    n=n+1
-                    print("Top-left corner of the card is inside the circle!",card_id,n)
+            circle_center = (screen_width // 2, screen_height // 2.3)
+            distance_to_center = ((x_position - circle_center[0]) ** 2 + (y_position - circle_center[1]) ** 2) ** 0.5
+            circle_radius = max(30,30+distance_to_center)  # Adjust the base radius as needed
+ 
+
+            if distance_to_center<=30:
+                print("Top-left corner of the card is inside the circle!", card_id)
+
+
+
         display_kortti(card_id, kortti_alueet, sprite_sheet_kuva, screen, (x_position, y_position))
-        draw_transparent_circle(surface)         
+        draw_transparent_circle(surface)   
     
     # Reset dragging state on mouse button release
     if not pressed_buttons[0] and hasattr(display_kortit, 'dragging_card'):
