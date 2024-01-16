@@ -1,7 +1,6 @@
 import pygame
-from sprite_sheet import load_sprite_sheet, maarita_alueet, display_kortit,draw_transparent_circle
+from sprite_sheet import load_sprite_sheet, maarita_alueet, display_kortit,draw_transparent_circle, update_circle_radius
 from logiikka import deal_hands, create_pakka, shuffle_pakka, pakan_vahennys, pakan_lisays, kortteja_kadessa
-import sys
 # pygame setuppi
 pygame.init()
 ruutu_leveys = 1280
@@ -27,22 +26,38 @@ card_ids_to_display = kasi1
 
 poistettavat_kortit = kasi1[:0]
 
-#dragging_state=False #Variable to track dragging state
+
+
+#dragging_state=True #Variable to track dragging state
 while running:
     timer.tick(fps)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    screen.blit(taustakuva, taustakuva_rect)
-    screen.blit(surface,(0,0))
+
     cursor_position = pygame.mouse.get_pos()
     pressed_buttons = pygame.mouse.get_pressed()
-   
+  
+    
+    screen.blit(taustakuva, taustakuva_rect)
+
+    
+    
+
     card_ids_to_display = kasi1[:kortteja_kadessa]
-    display_kortit(card_ids_to_display, kortti_alueet, sprite_sheet_kuva, screen, cursor_position, pressed_buttons,surface,30)
+    display_kortit(card_ids_to_display, kortti_alueet, sprite_sheet_kuva, screen, cursor_position, pressed_buttons,surface)
+
+
+
     pakan_lisays(kasi1, loput_kortit)
     pakan_vahennys(kasi1, poistettavat_kortit)
+
+
+
+    
+
+
   
     
 
