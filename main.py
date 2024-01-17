@@ -38,6 +38,7 @@ while running:
 
     cursor_position = pygame.mouse.get_pos()
     pressed_buttons = pygame.mouse.get_pressed()
+    
   
     surface.fill((0, 0, 0, 0))  
     screen.blit(taustakuva, taustakuva_rect)
