@@ -6,7 +6,7 @@ pygame.init()
 ruutu_leveys = 1280
 ruutu_korkeus = 720
 screen = pygame.display.set_mode((ruutu_leveys, ruutu_korkeus), pygame.SRCALPHA)
-surface=pygame.Surface((ruutu_leveys,ruutu_korkeus),pygame.SRCALPHA)
+surface=pygame.Surface((ruutu_leveys,ruutu_korkeus) ).convert_alpha()
 running = True
 sprite_sheet_kuva = load_sprite_sheet()
 screen.set_alpha(None)
@@ -39,7 +39,7 @@ while running:
     cursor_position = pygame.mouse.get_pos()
     pressed_buttons = pygame.mouse.get_pressed()
   
-    
+    surface.fill((0, 0, 0, 0))  
     screen.blit(taustakuva, taustakuva_rect)
 
     
@@ -61,8 +61,8 @@ while running:
   
     
 
-
-    pygame.display.update()
+ 
+    pygame.display.flip()
 
 pygame.quit()
 
