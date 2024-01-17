@@ -28,9 +28,9 @@ def draw_transparent_circle(screen, update_circle_radius):
     global circle_radius
 
     if update_circle_radius==True:
-        circle_radius = 50
+        circle_radius = 70
     else:
-        circle_radius = 30
+        circle_radius = 60
 
     circle_center = (screen_width // 2, screen_height // 2.3)
     alpha = 50
@@ -41,7 +41,7 @@ def draw_transparent_circle(screen, update_circle_radius):
 
 
 update_circle_radius = None
-circle_radius=30
+circle_radius=70
 
 
 def is_point_inside_circle(card_rect, circle_center, circle_radius):
@@ -76,7 +76,7 @@ def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_po
         y_position = 720 - 1150 / 5
         card_rect = pygame.Rect(x_position, y_position, card_width, card_height)
 
-        if card_rect.collidepoint(cursor_position) and pressed_buttons[0]:
+        if card_rect.collidepoint(cursor_position) and pressed_buttons[0    ]:
             if hasattr(display_kortit, 'dragging_card') and display_kortit.dragging_card == card_id:
                 x_position, y_position = cursor_position[0] - card_width / 2, cursor_position[1] - card_height / 2
                 display_kortit.dragging_card_position = (x_position, y_position)
@@ -89,15 +89,19 @@ def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_po
             x_position, y_position = cursor_position[0] - card_width / 2, cursor_position[1] - card_height / 2
             display_kortit.dragging_card_position = (x_position, y_position)
             circle_center = (screen_width // 2, screen_height // 2.3)
-            distance_to_center = ((x_position - circle_center[0]) ** 2 + (y_position - circle_center[1]) ** 2) ** 0.5
-
-            if distance_to_center <= 30:
+            distance_to_center = ((cursor_position[0] - circle_center[0]) ** 2 + (cursor_position[1] - circle_center[1]) ** 2) ** 0.5
+            print(cursor_position[0],cursor_position[1],card_id)
+            if distance_to_center <= 150:
                 print("Top-left corner of the card is inside the circle!", card_id)
                 update_circle_radius = True
+                
+                
             else:
                 update_circle_radius=False
+
+        
   
-        print("Card ID:", card_id, "Update Circle Radius:", update_circle_radius, "Circle Radius:", circle_radius)
+        #print("Card ID:", card_id, "Update Circle Radius:", update_circle_radius, "Circle Radius:", circle_radius)
 
         display_kortti(card_id, kortti_alueet, sprite_sheet_kuva, screen, (x_position, y_position))
 
