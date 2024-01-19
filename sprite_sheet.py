@@ -108,10 +108,9 @@ def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_po
                     card_ids.remove(card_id)
                     print("kädessä olevat kortit: ", card_ids)
                     print("lyödyt kortit: ", pelatut_kortit)
-                    if card_id in card_ids:
-                        card_ids.remove(card_id)
+                
 
-                    else:
+                else:
                         pakan_vahennys(card_ids,pelatut_kortit)
                         pakan_lisays(card_ids,loput_kortit)
                         print("Kädessä olevat kortit: ",card_ids)
@@ -126,7 +125,9 @@ def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_po
 
         display_kortti(card_id, kortti_alueet, sprite_sheet_kuva, screen, (x_position, y_position),pelatut_kortit)
     
-    
+    if not pressed_buttons[0] and hasattr(display_kortit, 'dragging_card'):
+        display_kortit.dragging_card = None
+        update_circle_radius = False    
    
 
     pygame.display.flip()
