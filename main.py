@@ -26,6 +26,7 @@ card_ids_to_display = kasi1
 
 poistettavat_kortit = kasi1[:0]
 
+pelatut_kortit=[]
 
 
 #dragging_state=True #Variable to track dragging state
@@ -47,12 +48,12 @@ while running:
     
 
     card_ids_to_display = kasi1[:kortteja_kadessa]
-    display_kortit(card_ids_to_display, kortti_alueet, sprite_sheet_kuva, screen, cursor_position, pressed_buttons,surface)
+    display_kortit(card_ids_to_display, kortti_alueet, sprite_sheet_kuva, screen, cursor_position, pressed_buttons,surface,pelatut_kortit,loput_kortit)
 
 
 
-    pakan_lisays(kasi1, loput_kortit)
-    pakan_vahennys(kasi1, poistettavat_kortit)
+    #pakan_lisays(kasi1, loput_kortit)
+    #pakan_vahennys(kasi1, poistettavat_kortit)
 
 
 
