@@ -29,7 +29,7 @@ def pakan_vahennys(kasi1,poistettavat_kortit):
         if poistetut_kortit:
             print(f"poistettiin{', '.join(poistetut_kortit)}kadesta")
 
-def pakan_lisays(hand, remaining_cards):
+def pakan_lisays(hand,remaining_cards):
     while len(hand) < kortteja_kadessa and remaining_cards:
         new_card = remaining_cards.pop(0)
         hand.append(new_card)

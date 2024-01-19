@@ -1,4 +1,5 @@
 import pygame
+from logiikka import pakan_vahennys, pakan_lisays, deal_hands
 
 screen_width, screen_height = (1280, 720)
 
@@ -24,37 +25,38 @@ def maarita_alueet():
 
     return kortti_alueet
 
-def draw_transparent_circle(screen, update_circle_radius):
+def draw_transparent_circle(screen,pressed_buttons):
     global circle_radius
+    global update_circle_radius
+    global dragging_card_position
 
     if update_circle_radius==True:
-        circle_radius = 50
+        circle_radius = 70
     else:
-        circle_radius = 30
+        circle_radius = 60
 
     circle_center = (screen_width // 2, screen_height // 2.3)
     alpha = 50
     circle_color = (0, 0, 0, alpha)
     pygame.draw.circle(screen, circle_color, circle_center, circle_radius)
 
-    return circle_center, circle_radius
+    return circle_center, circle_radius,update_circle_radius
 
 
 update_circle_radius = None
-circle_radius=30
+circle_radius=70
+
+pelatut_kortit=[]
 
 
-def is_point_inside_circle(card_rect, circle_center, circle_radius):
-    return (
-        circle_center[0] - circle_radius < card_rect.left
-        and circle_center[0] + circle_radius > card_rect.right
-        and circle_center[1] - circle_radius < card_rect.top
-        and circle_center[1] + circle_radius > card_rect.bottom
-    )
 
-def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_position, pressed_buttons,surface):
+
+
+def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_position, pressed_buttons,surface,pelatut_kortit,loput_kortit):
     global circle_radius
     global update_circle_radius
+    global dragging_card_position
+    
 
     if not card_ids:
         print("iha tyhjä")
@@ -68,8 +70,9 @@ def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_po
 
     # Clear the screen with a white background
     #screen.fill((255, 255, 255))
-    draw_transparent_circle(surface, update_circle_radius)
-    screen.blit(surface,(0,0))
+    draw_transparent_circle(surface, pressed_buttons)
+    _, _, update_circle_radius = draw_transparent_circle(surface, pressed_buttons)  # Update the global variable
+    screen.blit(surface, (0, 0))
     for i, card_id in enumerate(card_ids):
         circle_center = (screen_width // 2, screen_height // 2.3)
         x_position = positio + i * (card_width + 15)
@@ -89,23 +92,42 @@ def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_po
             x_position, y_position = cursor_position[0] - card_width / 2, cursor_position[1] - card_height / 2
             display_kortit.dragging_card_position = (x_position, y_position)
             circle_center = (screen_width // 2, screen_height // 2.3)
-            distance_to_center = ((x_position - circle_center[0]) ** 2 + (y_position - circle_center[1]) ** 2) ** 0.5
-
-            if distance_to_center <= 30:
-                print("Top-left corner of the card is inside the circle!", card_id)
+            distance_to_center = ((cursor_position[0] - circle_center[0]) ** 2 + (cursor_position[1] - circle_center[1]) ** 2) ** 0.5
+            #print(cursor_position[0],cursor_position[1],card_id)
+            if distance_to_center<=150 and card_id not in pelatut_kortit:
                 update_circle_radius = True
-            else:
-                update_circle_radius=False
+                #print(update_circle_radius)
+                print("Olemme ympyrän sisällä", card_id)
+                if not pressed_buttons[0]:#
+                    # Move the card to a specific area (pino)
+                    # Implement the logic to move the card to the pino (change the coordinates as needed)
+                    card_position_in_pino = (200, 200)
+                    display_kortit.dragging_card_position = card_position_in_pino
+                    # Remove the card from the käsi list
+                    pelatut_kortit.append(card_id)
+                    card_ids.remove(card_id)
+                    print("kädessä olevat kortit: ", card_ids)
+                    print("lyödyt kortit: ", pelatut_kortit)
+                
+
+                else:
+                        pakan_vahennys(card_ids,pelatut_kortit)
+                        pakan_lisays(card_ids,loput_kortit)
+                        print("Kädessä olevat kortit: ",card_ids)
+                        print("pelatut kortit: ",pelatut_kortit)
+                        #print(loput_kortit)
+
+
+
+        
   
-        print("Card ID:", card_id, "Update Circle Radius:", update_circle_radius, "Circle Radius:", circle_radius)
+        #print("Card ID:", card_id, "Update Circle Radius:", update_circle_radius, "Circle Radius:", circle_radius)
 
-        display_kortti(card_id, kortti_alueet, sprite_sheet_kuva, screen, (x_position, y_position))
-
+        display_kortti(card_id, kortti_alueet, sprite_sheet_kuva, screen, (x_position, y_position),pelatut_kortit)
+    
     if not pressed_buttons[0] and hasattr(display_kortit, 'dragging_card'):
         display_kortit.dragging_card = None
-        update_circle_radius = False
-    
-    
+        update_circle_radius = False    
    
 
     pygame.display.flip()
@@ -114,7 +136,10 @@ def display_kortit(card_ids, kortti_alueet, sprite_sheet_kuva, screen, cursor_po
     
     
 
-def display_kortti(kortin_id, kortti_alueet, sprite_sheet_kuva, screen, position):
+def display_kortti(kortin_id, kortti_alueet, sprite_sheet_kuva, screen, position, pelatut_kortit):
+    if kortin_id in pelatut_kortit:
+        return  # Skip rendering the card if it's in pelatut_kortit
+
     alue = kortti_alueet.get(kortin_id)
     if alue:
         kortin_kuva = sprite_sheet_kuva.subsurface(alue)
